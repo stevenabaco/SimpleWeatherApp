@@ -11,25 +11,35 @@ let API_KEY = "a8e71c9932b20c4ceb0aed183e6a83bb";
 /**
  * Retrieve weather data from openweathermap
  * HINT: Use fetch()
- * HINT: URL should look like this: 
+ * HINT: URL should look like this:
  * https://api.openweathermap.org/data/2.5/weather?q=detroit&appid=a8e71c9932b20c4ceb0aed183e6a83bb&units=imperial
  */
 getWeatherData = (city) => {
   const URL = "https://api.openweathermap.org/data/2.5/weather";
   //HINT: Use template literals to create a url with input and an API key
-
+  const FULL_URL = `${URL}?q=${city}&appid=${API_KEY}&units=imperial`;
   //CODE GOES HERE
-}
+  const weatherPromise = fetch(FULL_URL);
+  return weatherPromise.then((response) => {
+    return response.json();
+  });
+};
 
 /**
  * Retrieve city input and get the weather data
  * HINT: Use the promise returned from getWeatherData()
  */
 searchCity = () => {
-  const city = document.getElementById('city-input').value;
+  const city = document.getElementById("city-input").value;
   // CODE GOES HERE
-
-}
+  getWeatherData(city)
+    .then((response) => {
+      showWeatherData(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 /**
  * Show the weather data in HTML
@@ -37,6 +47,15 @@ searchCity = () => {
  */
 showWeatherData = (weatherData) => {
   //CODE GOES HERE
-  
-}
-
+  console.log(weatherData);
+  let cityName = document.getElementById("city-name");
+  let type = document.getElementById("weather-type");
+  let currentTemp = document.getElementById("temp");
+  let minTemp = document.getElementById("min-temp");
+  let maxTemp = document.getElementById("max-temp");
+  cityName.innerText = weatherData.name;
+  type.innerText = weatherData.weather[0].description;
+  currentTemp.innerText = weatherData.main.temp;
+  minTemp.innerText = weatherData.main.temp_min;
+  maxTemp.innerText = weatherData.main.temp_max;
+};
